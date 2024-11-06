@@ -1,18 +1,13 @@
 package org.example;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.example.Action.destroy;
-import static org.example.Action.look;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HomeWorkTest {
@@ -21,14 +16,18 @@ class HomeWorkTest {
 
     @Test
     void checkFirst() {
-        TestCase1 testCase = generateTestCase1();
+        TestCase1 testCase1 = generateTestCase1();
+        assertEquals(testCase1.expected, homeWork.getOriginalDoorNumbers(testCase1.maxDoors, testCase1.actionList));
 
-        assertEquals(testCase.expected, homeWork.getOriginalDoorNumbers(testCase.maxDoors, testCase.actionList));
+        TestCase1 testCase2 = generateTestCase2();
+        assertEquals(testCase2.expected, homeWork.getOriginalDoorNumbers(testCase2.maxDoors, testCase2.actionList));
     }
 
     @Test
-    void checkSecond(){
-        assertEquals(asList("3 1 5 2 4".split(" ")), homeWork.getLeaveOrder(5, 3));
+    void checkSecond() {
+        assertEquals(asList(3, 1, 5, 2, 4), homeWork.getLeaveOrder(5, 3));
+        assertEquals(asList(4, 3, 5, 2, 1), homeWork.getLeaveOrder(5, 4));
+        assertEquals(asList(4, 8, 2, 7, 3, 10, 9, 1, 6, 5), homeWork.getLeaveOrder(10, 4));
     }
 
 
@@ -50,6 +49,46 @@ class HomeWorkTest {
         return testCase;
     }
 
+    private TestCase1 generateTestCase2() {
+        TestCase1 testCase = new TestCase1();
+        testCase.parseExpected("5\n" +
+                "4\n" +
+                "6\n" +
+                "4\n" +
+                "7\n" +
+                "4\n" +
+                "8\n" +
+                "4\n" +
+                "9\n" +
+                "4\n" +
+                "10\n" +
+                "4\n" +
+                "11\n" +
+                "11");
+        testCase.parseInput("50 20\n" +
+                "L 5\n" +
+                "D 5\n" +
+                "L 4\n" +
+                "L 5\n" +
+                "D 5\n" +
+                "L 4\n" +
+                "L 5\n" +
+                "D 5\n" +
+                "L 4\n" +
+                "L 5\n" +
+                "D 5\n" +
+                "L 4\n" +
+                "L 5\n" +
+                "D 5\n" +
+                "L 4\n" +
+                "L 5\n" +
+                "D 5\n" +
+                "L 4\n" +
+                "L 5\n" +
+                "L 5");
+        return testCase;
+    }
+
 
     @RequiredArgsConstructor
     static class TestCase1 {
@@ -59,7 +98,7 @@ class HomeWorkTest {
 
         public void parseInput(String input) {
             String[] lines = input.split("(\n|\r|\r\n)");
-            maxDoors = Integer.valueOf(lines[0].split(" ")[0]);
+            maxDoors = Integer.parseInt(lines[0].split(" ")[0]);
             Arrays.stream(lines)
                     .skip(1)
                     .map(Action::parse)
